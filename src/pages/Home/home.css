@@ -1,0 +1,11 @@
+.disabledButton {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
