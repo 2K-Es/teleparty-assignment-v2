@@ -1,6 +1,5 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// import telepartyClientInstance from './utils/telepartyClientInstance';
 
 import './index.css';
 
@@ -9,7 +8,6 @@ const CreateOrJoin = lazy(() => import('./pages/CreateOrJoin'));
 const ChatRoom = lazy(() => import('./pages/ChatRoom'));
 
 export default function AppRoutes() {
-  // telepartyClientInstance;
   return (
     <div className="appContainer">
       <BrowserRouter>

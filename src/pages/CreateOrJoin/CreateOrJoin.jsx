@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
@@ -13,14 +13,14 @@ const ChatRoom = () => {
   const userName = useSelector((state) => state.userDetails.userName);
   const navigate = useNavigate();
 
-  const handleCreateRoom = async () => {
+  const handleCreateRoom = useCallback(async () => {
     const newRoomId = await telepartyClientInstance.createChatRoom(userName);
     navigate(`/chat/${newRoomId}`);
-  };
+  }, [userName, navigate]);
 
-  const handleJoinRoom = () => {
+  const handleJoinRoom = useCallback(() => {
     navigate(`/chat/${joiningRoomId}`);
-  };
+  }, [joiningRoomId, navigate]);
 
   return (
     <div>

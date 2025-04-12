@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 import './home.css';
-import { useNavigate } from 'react-router';
 
 const Home = () => {
   const [userName, setUserName] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSetUserName = () => {
-    dispatch({ type: 'userDetails/setUserName', payload: userName });
-    navigate('/chat');
-  };
+  const handleSetUserName = useMemo(() => {
+    return () => {
+      dispatch({ type: 'userDetails/setUserName', payload: userName });
+      navigate('/chat');
+    };
+  }, [userName, dispatch, navigate]);
 
   return (
     <div>

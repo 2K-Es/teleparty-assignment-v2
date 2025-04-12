@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 import { SocketMessageTypes } from 'teleparty-websocket-lib';
 
@@ -21,7 +21,7 @@ const ChatRoom = () => {
   const isConnected = useSelector((state) => state.chat.isConnected);
   const isAnyoneTyping = useSelector((state) => state.chat.isAnyoneTyping);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = useCallback(() => {
     if (newMessage.trim() && isConnected) {
       telepartyClientInstance.sendMessage(SocketMessageTypes.SEND_MESSAGE, {
         body: newMessage,
@@ -34,9 +34,9 @@ const ChatRoom = () => {
       );
       setNewMessage('');
     }
-  };
+  }, [newMessage, isConnected]);
 
-  const handleTyping = () => {
+  const handleTyping = useCallback(() => {
     if (isConnected) {
       telepartyClientInstance.sendMessage(
         SocketMessageTypes.SET_TYPING_PRESENCE,
@@ -45,15 +45,22 @@ const ChatRoom = () => {
         }
       );
     }
-  };
+  }, [isConnected]);
+
+  const chatRoomDetails = useMemo(() => {
+    return { userName, roomId };
+  }, [userName, roomId]);
 
   useEffect(() => {
     if (!isConnected) return;
-    if (userName && roomId) {
-      telepartyClientInstance.joinChatRoom(userName, roomId);
+    if (chatRoomDetails.userName && chatRoomDetails.roomId) {
+      telepartyClientInstance.joinChatRoom(
+        chatRoomDetails.userName,
+        chatRoomDetails.roomId
+      );
       console.log('Joining chat room...');
     }
-  }, [isConnected, userName, roomId]);
+  }, [isConnected, chatRoomDetails]);
 
   return (
     <div>

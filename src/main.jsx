@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
@@ -6,9 +5,7 @@ import AppWithRoutes from './App';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Provider store={store}>
-      <AppWithRoutes />
-    </Provider>
-  </StrictMode>
+  <Provider store={store}>
+    <AppWithRoutes />
+  </Provider>
 );
