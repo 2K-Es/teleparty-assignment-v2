@@ -49,8 +49,10 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (!isConnected) return;
-    telepartyClientInstance.joinChatRoom(userName, roomId);
-    console.log('Joining chat room...');
+    if (userName && roomId) {
+      telepartyClientInstance.joinChatRoom(userName, roomId);
+      console.log('Joining chat room...');
+    }
   }, [isConnected, userName, roomId]);
 
   return (
