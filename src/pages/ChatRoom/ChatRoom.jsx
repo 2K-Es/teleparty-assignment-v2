@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 
 import { SocketMessageTypes } from 'teleparty-websocket-lib';
@@ -14,6 +14,7 @@ import './chatRoom.css';
 
 const ChatRoom = () => {
   const { roomId } = useParams();
+  const dispatch = useDispatch();
 
   const [newMessage, setNewMessage] = useState('');
   const [isCurrentUserTyping, setIsCurrentUserTyping] = useState(false);
@@ -73,14 +74,18 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (!isConnected) return;
-    if (chatRoomDetails.userName && chatRoomDetails.roomId) {
-      telepartyClientInstance.joinChatRoom(
+    const joinChatRoomWithMessages = async () => {
+      const existingMessages = await telepartyClientInstance.joinChatRoom(
         chatRoomDetails.userName,
         chatRoomDetails.roomId
       );
+      dispatch({ type: 'chat/addMessageBulk', payload: existingMessages });
       console.log('Joining chat room...');
+    };
+    if (chatRoomDetails.userName && chatRoomDetails.roomId) {
+      joinChatRoomWithMessages();
     }
-  }, [isConnected, chatRoomDetails]);
+  }, [isConnected, chatRoomDetails, dispatch]);
 
   return (
     <div>
