@@ -7,6 +7,7 @@ import { SocketMessageTypes } from 'teleparty-websocket-lib';
 import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
 import NoUsernamePlaceholder from '@app/components/NoUsernamePlaceholder';
 import telepartyClientInstance from '@app/utils/telepartyClientInstance';
+import useDebounce from '@app/hooks/useDebounce';
 
 import ChatContainer from './components/ChatContainer';
 import './chatRoom.css';
@@ -15,6 +16,7 @@ const ChatRoom = () => {
   const { roomId } = useParams();
 
   const [newMessage, setNewMessage] = useState('');
+  const [isCurrentUserTyping, setIsCurrentUserTyping] = useState(false);
 
   const userName = useSelector((state) => state.userDetails.userName);
   const messageObjects = useSelector((state) => state.chat.messageObjects);
@@ -37,15 +39,33 @@ const ChatRoom = () => {
   }, [newMessage, isConnected]);
 
   const handleTyping = useCallback(() => {
-    if (isConnected) {
+    if (isConnected && !isCurrentUserTyping) {
       telepartyClientInstance.sendMessage(
         SocketMessageTypes.SET_TYPING_PRESENCE,
         {
           typing: true,
         }
       );
+      setIsCurrentUserTyping(true);
     }
-  }, [isConnected]);
+  }, [isConnected, isCurrentUserTyping]);
+
+  // debounce to set not typing after 3 seconds
+  useDebounce(
+    () => {
+      if (isConnected) {
+        telepartyClientInstance.sendMessage(
+          SocketMessageTypes.SET_TYPING_PRESENCE,
+          {
+            typing: false,
+          }
+        );
+        setIsCurrentUserTyping(false);
+      }
+    },
+    newMessage,
+    3000
+  );
 
   const chatRoomDetails = useMemo(() => {
     return { userName, roomId };
