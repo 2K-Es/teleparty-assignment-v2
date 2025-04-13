@@ -1,7 +1,11 @@
 import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
+import _map from 'lodash/map';
+import _size from 'lodash/size';
+
 import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
+import messageObjectReader from '@app/readers/messageObject.reader';
 
 import './styles.css';
 
@@ -26,32 +30,37 @@ const ChatContainer = ({
 
   return (
     <div className="chat-container" ref={containerRef}>
-      <PropertyControlledComponent
-        controllerProperty={messageObjects.length !== 0}
-      >
-        {messageObjects.map((message) => (
+      <PropertyControlledComponent controllerProperty={_size(messageObjects)}>
+        {_map(messageObjects, (message) => (
           <div
-            key={message.messageId}
-            className={`message ${message.userNickname === currentUserNickname ? 'current-user' : 'other-user'}`}
+            key={messageObjectReader.timestamp(message)}
+            className={`message ${messageObjectReader.userNickname(message) === currentUserNickname ? 'current-user' : 'other-user'}`}
           >
-            {message.isSystemMessage ? (
+            {messageObjectReader.isSystemMessage(message) ? (
               <div className="system-message">
-                <span className="user-nickname">{message.userNickname}</span>
-                <span>{` ${message.body}`}</span>
+                <span className="user-nickname">
+                  {messageObjectReader.userNickname(message)}
+                </span>
+                <span>{` ${messageObjectReader.body(message)}`}</span>
               </div>
             ) : (
               <>
                 <div className="message-header">
-                  {message.userNickname !== currentUserNickname && (
+                  {messageObjectReader.userNickname(message) !==
+                    currentUserNickname && (
                     <span className="user-nickname">
-                      {message.userNickname}
+                      {messageObjectReader.userNickname(message)}
                     </span>
                   )}
                   <span className="timestamp">
-                    {new Date(message.timestamp).toLocaleTimeString()}
+                    {new Date(
+                      messageObjectReader.timestamp(message)
+                    ).toLocaleTimeString()}
                   </span>
                 </div>
-                <div className="message-body">{message.body}</div>
+                <div className="message-body">
+                  {messageObjectReader.body(message)}
+                </div>
               </>
             )}
           </div>

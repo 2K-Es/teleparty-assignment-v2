@@ -1,3 +1,6 @@
+import _map from 'lodash/map';
+import _size from 'lodash/size';
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const chatSlice = createSlice({
@@ -13,8 +16,11 @@ const chatSlice = createSlice({
       state.messageObjects.push(action.payload);
     },
     addMessageBulk: (state, action) => {
-      if (action.payload?.messages?.length === 0) return;
-      const messageObjects = action.payload.messages.map((message) => message);
+      if (_size(action.payload?.messages) === 0) return;
+      const messageObjects = _map(
+        action.payload.messages,
+        (message) => message
+      );
       state.messageObjects.push(...messageObjects);
     },
     setIsAnyoneTyping: (state, action) => {

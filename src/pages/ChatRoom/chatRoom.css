@@ -3,3 +3,9 @@
   align-items: center;
   gap: 0.4rem;
 }
+
+.inputChatContainer {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.4rem;
+}

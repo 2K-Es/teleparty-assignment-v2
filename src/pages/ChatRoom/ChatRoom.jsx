@@ -2,6 +2,8 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 
+import _trim from 'lodash/trim';
+
 import { SocketMessageTypes } from 'teleparty-websocket-lib';
 
 import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
@@ -25,9 +27,10 @@ const ChatRoom = () => {
   const isAnyoneTyping = useSelector((state) => state.chat.isAnyoneTyping);
 
   const handleSendMessage = useCallback(() => {
-    if (newMessage.trim() && isConnected) {
+    const trimmedMessage = _trim(newMessage);
+    if (trimmedMessage && isConnected) {
       telepartyClientInstance.sendMessage(SocketMessageTypes.SEND_MESSAGE, {
-        body: newMessage,
+        body: trimmedMessage,
       });
       telepartyClientInstance.sendMessage(
         SocketMessageTypes.SET_TYPING_PRESENCE,
@@ -102,15 +105,18 @@ const ChatRoom = () => {
               currentUserNickname={userName}
               anyoneTyping={isAnyoneTyping}
             />
-            <input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSendMessage();
-                else handleTyping();
-              }}
-            />
-            <button onClick={handleSendMessage}>Send</button>
+            <div className="inputChatContainer">
+              <input
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSendMessage();
+                  else handleTyping();
+                }}
+              />
+              <button onClick={handleSendMessage}>Send</button>
+            </div>
           </div>
         </div>
       </PropertyControlledComponent>
