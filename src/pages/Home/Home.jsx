@@ -1,33 +1,40 @@
-import { useState, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 
+import _isEmpty from 'lodash/isEmpty';
+
 import './home.css';
+import { Field } from '@chakra-ui/react';
+import { Button, Input } from '@app/components/ui/atoms';
 
 const Home = () => {
   const [userName, setUserName] = useState('');
+  const [showEmptyUserNameError, setShowEmptyUserNameError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSetUserName = useMemo(() => {
-    return () => {
-      dispatch({ type: 'userDetails/setUserName', payload: userName });
-      navigate('/chat');
-    };
+  const handleSetUserName = useCallback(() => {
+    if (_isEmpty(userName)) return setShowEmptyUserNameError(true);
+    dispatch({ type: 'userDetails/setUserName', payload: userName });
+    navigate('/chat');
   }, [userName, dispatch, navigate]);
 
   return (
-    <div>
+    <div className="homeContainer">
       <h1>Chat Room</h1>
       <div className="formSection">
-        <input
-          type="text"
-          placeholder="Please enter a username"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSetUserName()}
-        />
-        <button onClick={handleSetUserName}>Set User Name</button>
+        <Field.Root invalid={showEmptyUserNameError}>
+          <Input
+            type="text"
+            placeholder="Please enter a username"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSetUserName()}
+          />
+          <Field.ErrorText>This field is required</Field.ErrorText>
+        </Field.Root>
+        <Button onClick={handleSetUserName}>Set User Name</Button>
       </div>
     </div>
   );

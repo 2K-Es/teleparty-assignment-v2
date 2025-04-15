@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 
 import _trim from 'lodash/trim';
+import _isEmpty from 'lodash/isEmpty';
 
 import { SocketMessageTypes } from 'teleparty-websocket-lib';
 
@@ -10,8 +11,10 @@ import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
 import NoUsernamePlaceholder from '@app/components/NoUsernamePlaceholder';
 import telepartyClientInstance from '@app/utils/telepartyClientInstance';
 import useDebounce from '@app/hooks/useDebounce';
+import { INVALID_SESSION_ID_ERROR_MESSAGE } from '@app/constants/telepartyClientError.constants';
+import { Button, Input } from '@app/components/ui/atoms';
 
-import ChatContainer from './components/ChatContainer';
+import { ChatContainer, InvalidSessionModal } from './components';
 import './chatRoom.css';
 
 const ChatRoom = () => {
@@ -78,12 +81,21 @@ const ChatRoom = () => {
   useEffect(() => {
     if (!isConnected) return;
     const joinChatRoomWithMessages = async () => {
-      const existingMessages = await telepartyClientInstance.joinChatRoom(
-        chatRoomDetails.userName,
-        chatRoomDetails.roomId
-      );
-      dispatch({ type: 'chat/addMessageBulk', payload: existingMessages });
-      console.log('Joining chat room...');
+      try {
+        const existingMessages = await telepartyClientInstance.joinChatRoom(
+          chatRoomDetails.userName,
+          chatRoomDetails.roomId
+        );
+        dispatch({ type: 'chat/addMessageBulk', payload: existingMessages });
+        console.log('Joining chat room...');
+      } catch (err) {
+        if (err.message === INVALID_SESSION_ID_ERROR_MESSAGE) {
+          dispatch({
+            type: 'modals/setIsChatRoomInvalidSessionModalOpen',
+            payload: true,
+          });
+        }
+      }
     };
     if (chatRoomDetails.userName && chatRoomDetails.roomId) {
       joinChatRoomWithMessages();
@@ -92,7 +104,7 @@ const ChatRoom = () => {
 
   return (
     <div>
-      <PropertyControlledComponent controllerProperty={userName !== ''}>
+      <PropertyControlledComponent controllerProperty={!_isEmpty(userName)}>
         <div>
           <h3>Chat User Name : {userName}</h3>
           <div className="roomIdContainer">
@@ -106,7 +118,7 @@ const ChatRoom = () => {
               anyoneTyping={isAnyoneTyping}
             />
             <div className="inputChatContainer">
-              <input
+              <Input
                 placeholder="Type a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -115,12 +127,13 @@ const ChatRoom = () => {
                   else handleTyping();
                 }}
               />
-              <button onClick={handleSendMessage}>Send</button>
+              <Button onClick={handleSendMessage}>Send</Button>
             </div>
           </div>
         </div>
       </PropertyControlledComponent>
-      <PropertyControlledComponent controllerProperty={userName === ''}>
+      <InvalidSessionModal />
+      <PropertyControlledComponent controllerProperty={_isEmpty(userName)}>
         <NoUsernamePlaceholder />
       </PropertyControlledComponent>
     </div>
