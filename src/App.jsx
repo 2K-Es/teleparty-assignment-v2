@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 
 import { Provider as ChakraProvider } from './components/ui/provider';
 import './index.css';
@@ -12,7 +12,7 @@ export default function AppRoutes() {
   return (
     <ChakraProvider>
       <div className="appContainer">
-        <BrowserRouter>
+        <HashRouter>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -20,7 +20,7 @@ export default function AppRoutes() {
               <Route path="/chat/:roomId" element={<ChatRoom />} />
             </Routes>
           </Suspense>
-        </BrowserRouter>
+        </HashRouter>
       </div>
     </ChakraProvider>
   );
