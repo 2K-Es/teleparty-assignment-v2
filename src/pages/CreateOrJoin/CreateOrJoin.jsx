@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
@@ -16,18 +16,30 @@ const ChatRoom = () => {
   const [joiningRoomId, setJoiningRoomId] = useState('');
   const [showEmptyJoiningRoomIdError, setShowEmptyJoiningRoomIdError] =
     useState(false);
+
+  const isConnected = useSelector((state) => state.chat.isConnected);
   const userName = useSelector((state) => state.userDetails.userName);
   const navigate = useNavigate();
 
   const handleCreateRoom = useCallback(async () => {
-    const newRoomId = await telepartyClientInstance.createChatRoom(userName);
-    navigate(`/chat/${newRoomId}`);
+    try {
+      const newRoomId = await telepartyClientInstance.createChatRoom(userName);
+      navigate(`/chat/${newRoomId}`);
+    } catch (error) {
+      console.error('Failed to create chat room:', error);
+    }
   }, [userName, navigate]);
 
   const handleJoinRoom = useCallback(() => {
     if (_isEmpty(joiningRoomId)) return setShowEmptyJoiningRoomIdError(true);
     navigate(`/chat/${joiningRoomId}`);
   }, [joiningRoomId, navigate]);
+
+  useEffect(() => {
+    if (!isConnected) {
+      telepartyClientInstance.connect();
+    }
+  }, [isConnected, navigate]);
 
   return (
     <div className="createOrJoinContainer">

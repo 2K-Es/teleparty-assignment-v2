@@ -17,14 +17,12 @@ import { addMessage, setConnectionState } from '../features/chat/chatSlice';
 
 export const createEventHandler = (dispatch, clientInstance) => ({
   onConnectionReady: () => {
-    console.log('Connection has been established');
     dispatch(setConnectionState(true));
-    clientInstance._handleSocketOpen();
+    clientInstance.handleSocketOpen();
   },
   onClose: () => {
-    console.log('Socket has been closed');
     dispatch(setConnectionState(false));
-    clientInstance._handleSocketClose(); // Trigger reconnection logic
+    clientInstance.handleSocketClose(); // Trigger reconnection logic
   },
   onMessage: (message) => {
     const type = message.type;

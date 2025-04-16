@@ -15,13 +15,16 @@ const chatSlice = createSlice({
       console.log('Adding message object:', action.payload);
       state.messageObjects.push(action.payload);
     },
-    addMessageBulk: (state, action) => {
+    clearMessages: (state) => {
+      state.messageObjects = [];
+    },
+    initMessageBulk: (state, action) => {
       if (_size(action.payload?.messages) === 0) return;
       const messageObjects = _map(
         action.payload.messages,
         (message) => message
       );
-      state.messageObjects.push(...messageObjects);
+      state.messageObjects = messageObjects;
     },
     setIsAnyoneTyping: (state, action) => {
       state.isAnyoneTyping = action.payload;
@@ -34,7 +37,8 @@ const chatSlice = createSlice({
 
 export const {
   addMessage,
-  addMessageBulk,
+  clearMessages,
+  initMessageBulk,
   setIsAnyoneTyping,
   setConnectionState,
 } = chatSlice.actions;

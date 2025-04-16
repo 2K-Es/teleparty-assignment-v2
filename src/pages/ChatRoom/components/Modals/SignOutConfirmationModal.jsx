@@ -17,7 +17,8 @@ const SignOutConfirmationModal = () => {
       type: 'modals/setIsSignOutConfirmationModalOpen',
       payload: false,
     });
-    telepartyClientInstance.handleManualDisconnect();
+    telepartyClientInstance.disconnect();
+    dispatch({ type: 'chat/clearMessages' });
     navigate('/');
   }, [dispatch, navigate]);
 

@@ -1,3 +1,10 @@
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  align-items: center;
+}
+
 .roomIdContainer {
   display: flex;
   align-items: center;
@@ -5,7 +12,10 @@
 }
 
 .inputChatContainer {
-  margin-top: 0.8rem;
   display: flex;
   gap: 0.4rem;
+}
+
+.roomIdInput {
+  cursor: default;
 }

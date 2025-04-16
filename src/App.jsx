@@ -1,8 +1,8 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import './index.css';
 import { Provider as ChakraProvider } from './components/ui/provider';
+import './index.css';
 
 const Home = lazy(() => import('./pages/Home'));
 const CreateOrJoin = lazy(() => import('./pages/CreateOrJoin'));

@@ -1,0 +1,3 @@
+const TYPING_DEBOUNCE_DELAY = 3000; // 3 seconds
+
+export { TYPING_DEBOUNCE_DELAY };

@@ -19,6 +19,7 @@ import {
   InvalidSessionModal,
   SignOutConfirmationModal,
 } from './components';
+import { TYPING_DEBOUNCE_DELAY } from './chatRoom.constants';
 import './chatRoom.css';
 
 const ChatRoom = () => {
@@ -75,7 +76,7 @@ const ChatRoom = () => {
       }
     },
     newMessage,
-    3000
+    TYPING_DEBOUNCE_DELAY
   );
 
   const chatRoomDetails = useMemo(() => {
@@ -90,14 +91,19 @@ const ChatRoom = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!isConnected) return;
+    if (!isConnected) {
+      telepartyClientInstance.connect();
+    }
     const joinChatRoomWithMessages = async () => {
       try {
         const existingMessages = await telepartyClientInstance.joinChatRoom(
           chatRoomDetails.userName,
           chatRoomDetails.roomId
         );
-        dispatch({ type: 'chat/addMessageBulk', payload: existingMessages });
+        dispatch({
+          type: 'chat/initMessageBulk',
+          payload: existingMessages,
+        });
         console.log('Joining chat room...');
       } catch (err) {
         if (err.message === INVALID_SESSION_ID_ERROR_MESSAGE) {
@@ -117,11 +123,11 @@ const ChatRoom = () => {
     <div>
       <PropertyControlledComponent controllerProperty={!_isEmpty(userName)}>
         <div>
-          <div>
-            <h3>Chat User Name : {userName}</h3>
+          <div className="headerContainer">
+            <h3>User Name: {userName}</h3>
             <div className="roomIdContainer">
-              <h4>Chat Room ID : </h4>
-              <input disabled value={roomId} />
+              <h3>RoomID: </h3>
+              <Input className="roomIdInput" disabled value={roomId} />
             </div>
             <Button onClick={handleSignOutButtonClick}>Sign Out</Button>
           </div>

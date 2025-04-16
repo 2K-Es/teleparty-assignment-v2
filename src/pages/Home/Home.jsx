@@ -6,6 +6,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 import { Field } from '@chakra-ui/react';
 import { Button, Input } from '@app/components/ui/atoms';
+import telepartyClientInstance from '@app/utils/telepartyClientInstance';
 
 import './home.css';
 
@@ -18,6 +19,7 @@ const Home = () => {
   const handleSetUserName = useCallback(() => {
     if (_isEmpty(userName)) return setShowEmptyUserNameError(true);
     dispatch({ type: 'userDetails/setUserName', payload: userName });
+    telepartyClientInstance.connect();
     navigate('/chat');
   }, [userName, dispatch, navigate]);
 
