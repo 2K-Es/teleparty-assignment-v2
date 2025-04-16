@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -12,13 +12,13 @@ const InvalidSessionModal = () => {
     (state) => state.modals.isChatRoomInvalidSessionModalOpen
   );
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     dispatch({
       type: 'modals/setIsChatRoomInvalidSessionModalOpen',
       payload: false,
     });
     navigate('/chat');
-  };
+  }, [dispatch, navigate]);
 
   return (
     <GeneralDialog

@@ -15,14 +15,16 @@ import { addMessage, setConnectionState } from '../features/chat/chatSlice';
  *   - Dispatches 'addMessage' for received chat messages.
  */
 
-export const createEventHandler = (dispatch) => ({
+export const createEventHandler = (dispatch, clientInstance) => ({
   onConnectionReady: () => {
     console.log('Connection has been established');
     dispatch(setConnectionState(true));
+    clientInstance._handleSocketOpen();
   },
   onClose: () => {
     console.log('Socket has been closed');
     dispatch(setConnectionState(false));
+    clientInstance._handleSocketClose(); // Trigger reconnection logic
   },
   onMessage: (message) => {
     const type = message.type;

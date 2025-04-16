@@ -14,7 +14,11 @@ import useDebounce from '@app/hooks/useDebounce';
 import { INVALID_SESSION_ID_ERROR_MESSAGE } from '@app/constants/telepartyClientError.constants';
 import { Button, Input } from '@app/components/ui/atoms';
 
-import { ChatContainer, InvalidSessionModal } from './components';
+import {
+  ChatContainer,
+  InvalidSessionModal,
+  SignOutConfirmationModal,
+} from './components';
 import './chatRoom.css';
 
 const ChatRoom = () => {
@@ -78,6 +82,13 @@ const ChatRoom = () => {
     return { userName, roomId };
   }, [userName, roomId]);
 
+  const handleSignOutButtonClick = useCallback(() => {
+    dispatch({
+      type: 'modals/setIsSignOutConfirmationModalOpen',
+      payload: true,
+    });
+  }, [dispatch]);
+
   useEffect(() => {
     if (!isConnected) return;
     const joinChatRoomWithMessages = async () => {
@@ -106,10 +117,13 @@ const ChatRoom = () => {
     <div>
       <PropertyControlledComponent controllerProperty={!_isEmpty(userName)}>
         <div>
-          <h3>Chat User Name : {userName}</h3>
-          <div className="roomIdContainer">
-            <h4>Chat Room ID : </h4>
-            <input disabled value={roomId} />
+          <div>
+            <h3>Chat User Name : {userName}</h3>
+            <div className="roomIdContainer">
+              <h4>Chat Room ID : </h4>
+              <input disabled value={roomId} />
+            </div>
+            <Button onClick={handleSignOutButtonClick}>Sign Out</Button>
           </div>
           <div>
             <ChatContainer
@@ -132,7 +146,11 @@ const ChatRoom = () => {
           </div>
         </div>
       </PropertyControlledComponent>
+
+      {/* Modals */}
       <InvalidSessionModal />
+      <SignOutConfirmationModal />
+
       <PropertyControlledComponent controllerProperty={_isEmpty(userName)}>
         <NoUsernamePlaceholder />
       </PropertyControlledComponent>

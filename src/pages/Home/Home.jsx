@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router';
 
 import _isEmpty from 'lodash/isEmpty';
 
-import './home.css';
 import { Field } from '@chakra-ui/react';
 import { Button, Input } from '@app/components/ui/atoms';
+
+import './home.css';
 
 const Home = () => {
   const [userName, setUserName] = useState('');
