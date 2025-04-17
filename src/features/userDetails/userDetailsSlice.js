@@ -5,6 +5,7 @@ const userDetailsSlice = createSlice({
   initialState: {
     userName: sessionStorage.getItem('userName') || '',
     userProfilePic: sessionStorage.getItem('userProfilePic') || '',
+    isUploadingProfilePic: false,
   },
   reducers: {
     setUserName: (state, action) => {
@@ -16,8 +17,12 @@ const userDetailsSlice = createSlice({
       sessionStorage.setItem('userProfilePic', action.payload);
       state.userProfilePic = action.payload;
     },
+    setIsUploadingProfilePic: (state, action) => {
+      state.isUploadingProfilePic = action.payload;
+    },
   },
 });
 
-export const { setUserName, setUserProfilePic } = userDetailsSlice.actions;
+export const { setUserName, setUserProfilePic, setIsUploadingProfilePic } =
+  userDetailsSlice.actions;
 export default userDetailsSlice.reducer;

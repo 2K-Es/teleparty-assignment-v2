@@ -138,7 +138,9 @@ const ChatRoom = () => {
               <h3>RoomID: </h3>
               <Input className="roomIdInput" disabled value={roomId} />
             </div>
-            <Button onClick={handleSignOutButtonClick}>Sign Out</Button>
+            <Button colorPalette="red" onClick={handleSignOutButtonClick}>
+              Sign Out
+            </Button>
           </div>
           <div>
             <ChatContainer
@@ -156,7 +158,9 @@ const ChatRoom = () => {
                   else handleTyping();
                 }}
               />
-              <Button onClick={handleSendMessage}>Send</Button>
+              <Button colorPalette="green" onClick={handleSendMessage}>
+                Send
+              </Button>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import _head from 'lodash/head';
@@ -9,57 +9,42 @@ import { FileUpload, Image } from '@chakra-ui/react';
 import { Button } from '@app/components/ui/atoms';
 import { githubRepoContants } from '@app/constants/githubRepo.constants';
 
+import { uploadToGitHub } from './actions';
 import './styles.css';
-import { parseImageAsUrl, generateUniqueFileName } from './helpers';
 
 const ProfilePicUpload = () => {
   const [imageSrc, setImageSrc] = useState('');
   const dispatch = useDispatch();
 
-  const uploadToGitHub = async (file) => {
-    const fileName = `profile-pics/${generateUniqueFileName(file)}`;
-    const base64Content = await parseImageAsUrl(file);
-    const content = base64Content.split(',')[1]; // Remove the data URL prefix
+  const handleFileChange = useCallback(
+    async (files) => {
+      const acceptedFileObject = _head(files.acceptedFiles);
+      if (!acceptedFileObject) return;
 
-    const response = await fetch(
-      `${githubRepoContants.GITHUB_API_URL}/repos/${githubRepoContants.GITHUB_REPO_OWNER}/${githubRepoContants.GITHUB_REPO_NAME}/contents/${fileName}`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_ACCESS_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `Upload profile picture: ${file.name}`,
-          content: content,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to upload file to GitHub');
-    }
-
-    return fileName;
-  };
-
-  const handleFileChange = async (files) => {
-    const acceptedFileObject = _head(files.acceptedFiles);
-    if (!acceptedFileObject) return;
-
-    try {
-      // Upload the file to GitHub
-      const uniqueId = await uploadToGitHub(acceptedFileObject);
-
-      setImageSrc(uniqueId);
       dispatch({
-        type: 'userDetails/setUserProfilePic',
-        payload: uniqueId,
+        type: 'userDetails/setIsUploadingProfilePic',
+        payload: true,
       });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  };
+
+      try {
+        const uniqueId = await uploadToGitHub(acceptedFileObject);
+
+        setImageSrc(uniqueId);
+        dispatch({
+          type: 'userDetails/setUserProfilePic',
+          payload: uniqueId,
+        });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      } finally {
+        dispatch({
+          type: 'userDetails/setIsUploadingProfilePic',
+          payload: false,
+        });
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <div className="profilePicUploaderContainer">

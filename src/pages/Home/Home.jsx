@@ -1,5 +1,5 @@
 import { useState, useCallback, memo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 import _isEmpty from 'lodash/isEmpty';
@@ -16,6 +16,10 @@ const Home = () => {
   const [showEmptyUserNameError, setShowEmptyUserNameError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isUploadingProfilePic = useSelector(
+    (state) => state.userDetails.isUploadingProfilePic
+  );
 
   const handleSetUserName = useCallback(() => {
     if (_isEmpty(userName)) return setShowEmptyUserNameError(true);
@@ -44,7 +48,14 @@ const Home = () => {
             />
             <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
-          <Button onClick={handleSetUserName}>Set User Name</Button>
+          <Button
+            loading={isUploadingProfilePic}
+            disabled={isUploadingProfilePic}
+            loadingText="Uploading profile pic"
+            onClick={handleSetUserName}
+          >
+            Set User Name
+          </Button>
         </div>
       </div>
     </div>
