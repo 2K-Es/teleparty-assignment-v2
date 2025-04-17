@@ -8,6 +8,7 @@ import { Image } from '@chakra-ui/react';
 
 import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
 import messageObjectReader from '@app/readers/messageObject.reader';
+import { githubRepoContants } from '@app/constants/githubRepo.constants';
 
 import './styles.css';
 
@@ -54,7 +55,7 @@ const ChatContainer = ({
                       <span>
                         {messageObjectReader.userIcon(message) && (
                           <Image
-                            src={`https://raw.githubusercontent.com/2K-Es/teleparty-assignment-v2/main/${messageObjectReader.userIcon(message)}`}
+                            src={`${githubRepoContants.GITHUB_USERCONTENT_LINK}/${messageObjectReader.userIcon(message)}`}
                             alt="Uploaded Profile Pic"
                             boxSize="60px"
                             borderRadius="full"

@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router';
 
 import _isEmpty from 'lodash/isEmpty';
 
-import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
+import { Field, Image, Input } from '@chakra-ui/react';
 
+import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
 import NoUsernamePlaceholder from '@app/components/NoUsernamePlaceholder';
 import telepartyClientInstance from '@app/utils/telepartyClientInstance';
-import './createOrJoin.css';
 import { Button } from '@app/components/ui/atoms';
-import { Field, Image, Input } from '@chakra-ui/react';
+import { githubRepoContants } from '@app/constants/githubRepo.constants';
+
+import './createOrJoin.css';
 
 const ChatRoom = () => {
   const [joiningRoomId, setJoiningRoomId] = useState('');
@@ -55,7 +57,7 @@ const ChatRoom = () => {
             controllerProperty={!_isEmpty(userProfilePic)}
           >
             <Image
-              src={`https://raw.githubusercontent.com/2K-Es/teleparty-assignment-v2/main/${userProfilePic}`}
+              src={`${githubRepoContants.GITHUB_USERCONTENT_LINK}/${userProfilePic}`}
               alt="Uploaded Profile Pic"
               boxSize="150px"
               borderRadius="full"

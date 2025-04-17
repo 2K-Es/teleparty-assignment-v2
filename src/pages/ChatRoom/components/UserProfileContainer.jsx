@@ -6,6 +6,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { Image } from '@chakra-ui/react';
 
 import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
+import { githubRepoContants } from '@app/constants/githubRepo.constants';
 
 import './styles.css';
 
@@ -17,7 +18,7 @@ const UserProfileContainer = ({ userProfilePic, userName }) => {
         controllerProperty={!_isEmpty(userProfilePic)}
       >
         <Image
-          src={`https://raw.githubusercontent.com/2K-Es/teleparty-assignment-v2/main/${userProfilePic}`}
+          src={`${githubRepoContants.GITHUB_USERCONTENT_LINK}/${userProfilePic}`}
           alt="Uploaded Profile Pic"
           boxSize="40px"
           borderRadius="full"

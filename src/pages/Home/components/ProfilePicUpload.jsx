@@ -65,7 +65,7 @@ const ProfilePicUpload = () => {
     <div className="profilePicUploaderContainer">
       {imageSrc && (
         <Image
-          src={`https://raw.githubusercontent.com/2K-Es/teleparty-assignment-v2/main/${imageSrc}`}
+          src={`${githubRepoContants.GITHUB_USERCONTENT_LINK}/${imageSrc}`}
           alt="Uploaded Profile Pic"
           boxSize="150px"
           borderRadius="full"
