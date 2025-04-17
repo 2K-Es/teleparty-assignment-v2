@@ -83,7 +83,7 @@ class TelepartyClientInstance {
    * Joins a chat room using the TelepartyClient instance.
    * @param {string} nickname - The user's nickname.
    * @param {string} roomId - The room ID to join.
-   * @param {string} [userIcon] - Optional user icon.
+   * @param {string} [userIcon] - Optional unique ID of the user's profile picture.
    * @returns {Promise<MessageList>} - A promise resolving to the list of previous messages.
    */
   async joinChatRoom(nickname, roomId, userIcon) {
@@ -97,7 +97,7 @@ class TelepartyClientInstance {
   /**
    * Creates a chat room using the TelepartyClient instance.
    * @param {string} nickname - The user's nickname.
-   * @param {string} [userIcon] - Optional user icon.
+   * @param {string} [userIcon] - Optional unique ID of the user's profile picture.
    * @returns {Promise<string>} - A promise resolving to the created room ID.
    */
   async createChatRoom(nickname, userIcon) {

@@ -18,6 +18,7 @@ import {
   ChatContainer,
   InvalidSessionModal,
   SignOutConfirmationModal,
+  UserProfileContainer,
 } from './components';
 import { TYPING_DEBOUNCE_DELAY } from './chatRoom.constants';
 import './chatRoom.css';
@@ -30,6 +31,10 @@ const ChatRoom = () => {
   const [isCurrentUserTyping, setIsCurrentUserTyping] = useState(false);
 
   const userName = useSelector((state) => state.userDetails.userName);
+  const userProfilePic = useSelector(
+    (state) => state.userDetails.userProfilePic
+  );
+
   const messageObjects = useSelector((state) => state.chat.messageObjects);
   const isConnected = useSelector((state) => state.chat.isConnected);
   const isAnyoneTyping = useSelector((state) => state.chat.isAnyoneTyping);
@@ -80,8 +85,8 @@ const ChatRoom = () => {
   );
 
   const chatRoomDetails = useMemo(() => {
-    return { userName, roomId };
-  }, [userName, roomId]);
+    return { userName, roomId, userProfilePic };
+  }, [userName, roomId, userProfilePic]);
 
   const handleSignOutButtonClick = useCallback(() => {
     dispatch({
@@ -98,7 +103,8 @@ const ChatRoom = () => {
       try {
         const existingMessages = await telepartyClientInstance.joinChatRoom(
           chatRoomDetails.userName,
-          chatRoomDetails.roomId
+          chatRoomDetails.roomId,
+          chatRoomDetails.userProfilePic
         );
         dispatch({
           type: 'chat/initMessageBulk',
@@ -124,7 +130,10 @@ const ChatRoom = () => {
       <PropertyControlledComponent controllerProperty={!_isEmpty(userName)}>
         <div>
           <div className="headerContainer">
-            <h3>User Name: {userName}</h3>
+            <UserProfileContainer
+              userProfilePic={userProfilePic}
+              userName={userName}
+            />
             <div className="roomIdContainer">
               <h3>RoomID: </h3>
               <Input className="roomIdInput" disabled value={roomId} />

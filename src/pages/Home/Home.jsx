@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 
@@ -8,6 +8,7 @@ import { Field } from '@chakra-ui/react';
 import { Button, Input } from '@app/components/ui/atoms';
 import telepartyClientInstance from '@app/utils/telepartyClientInstance';
 
+import ProfilePicUpload from './components/ProfilePicUpload';
 import './home.css';
 
 const Home = () => {
@@ -25,22 +26,29 @@ const Home = () => {
 
   return (
     <div className="homeContainer">
-      <h1>Chat Room</h1>
-      <div className="formSection">
-        <Field.Root invalid={showEmptyUserNameError}>
-          <Input
-            type="text"
-            placeholder="Please enter a username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSetUserName()}
-          />
-          <Field.ErrorText>This field is required</Field.ErrorText>
-        </Field.Root>
-        <Button onClick={handleSetUserName}>Set User Name</Button>
+      <div>
+        <h1>Chat Room</h1>
+      </div>
+      <div className="formContainer">
+        <div className="formSection">
+          <ProfilePicUpload />
+        </div>
+        <div className="formSection">
+          <Field.Root invalid={showEmptyUserNameError}>
+            <Input
+              type="text"
+              placeholder="Please enter a username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSetUserName()}
+            />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+          <Button onClick={handleSetUserName}>Set User Name</Button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default memo(Home);

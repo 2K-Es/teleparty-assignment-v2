@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import _map from 'lodash/map';
 import _size from 'lodash/size';
 
+import { Image } from '@chakra-ui/react';
+
 import PropertyControlledComponent from '@app/hoc/PropertyControlledComponent';
 import messageObjectReader from '@app/readers/messageObject.reader';
 
@@ -48,9 +50,21 @@ const ChatContainer = ({
                 <div className="message-header">
                   {messageObjectReader.userNickname(message) !==
                     currentUserNickname && (
-                    <span className="user-nickname">
-                      {messageObjectReader.userNickname(message)}
-                    </span>
+                    <>
+                      <span>
+                        {messageObjectReader.userIcon(message) && (
+                          <Image
+                            src={`https://raw.githubusercontent.com/2K-Es/teleparty-assignment-v2/main/${messageObjectReader.userIcon(message)}`}
+                            alt="Uploaded Profile Pic"
+                            boxSize="60px"
+                            borderRadius="full"
+                          />
+                        )}
+                      </span>
+                      <span className="user-nickname">
+                        {messageObjectReader.userNickname(message)}
+                      </span>
+                    </>
                   )}
                   <span className="timestamp">
                     {new Date(
